@@ -1,74 +1,54 @@
 <template>
-  <div class="container-fluid contenedorT">
-    <div class="row">
-      <h1>LISTA DE TAREAS</h1>
-      <div class="row justify-content-center">
-        <div class="col-5">
-          <div class="input-group">
-            <input class="form-control" 
-                   type="text" 
-                   v-model="nuevaTarea" 
-                   @keyup.enter="agregarTarea"
-                   placeholder="AÑADIR TAREA" />
-          </div>
+    <div class="container-fluid contenedorT">
+        <div class="row">
+            <h1>LISTA DE TAREAS</h1>
+            <div class="row justify-content-center">
+                <div class="col-5">
+                    <div class="input-group">
+                        <input class="form-control" type="text" v-model="nuevaTarea" @keyup.enter="agregarTarea"
+                            placeholder="AÑADIR TAREA" />
+                    </div>
+                </div>
+                <div class="col-2 md">
+                    <button type="button" @click="agregarTarea" class="btn btn-success botonancho">
+                        AGREGAR
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="col-2">
-          <button type="button" 
-                  @click="agregarTarea" 
-                  class="btn btn-success botonancho">
-            AGREGAR
-          </button>
+
+        <div class="row rowLi d-flex justify-content-center">
+            <div class="col-10">
+                <div class="lista-tareas">
+                    <div class="p-3 border d-flex justify-content-between" v-for="(tarea, index) in tareas" :key="index">
+                        <span :class="{ 'tarea-realizada': tarea.realizada }">
+                            {{ tarea.texto }}
+                        </span>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-success botonS" @click="marcarRealizada(index)">
+                                <img src="../assets/paloma.svg" />
+                            </button>
+                            <button type="button" class="btn btn-warning botonS" @click="editarTarea(index)">
+                                <img src="../assets/lapiz.svg" />
+                            </button>
+                            <button type="button" class="btn btn-danger botonS" @click="eliminarTareaConfirmado">
+                                <img src="../assets/cruz.svg" />
+                            </button>
+                            <div :class="showModal" v-show="showModal = false">
+                                <div class="modal-content">
+                                    <p>eliminar</p>
+                                    <div>
+                                        <button class="btn-si" @click="eliminarTareaConfirmado">SI</button>
+                                        <button class="btn-no" @click="showModal = false">NO</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="row rowLi d-flex justify-content-center">
-      <div class="col-10 ">
-        <div class="p-3 border d-flex justify-content-between" 
-             v-for="(tarea, index) in tareas" :key="index">
-          <span :class="{ 'tarea-realizada': tarea.realizada }">
-            {{ tarea.texto }}
-          </span>
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-success botonS" 
-                    @click="marcarRealizada(index)">
-              <svg xmlns="http://www.w3.org/2000/svg" 
-                   width="16" 
-                   height="16" 
-                   fill="currentColor"
-                   class="bi bi-check2" viewBox="0 0 16 16">
-                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
-              </svg>
-            </button>
-            <button type="button" 
-                    class="btn btn-warning botonS" 
-                    @click="editarTarea(index)">
-              <svg xmlns="http://www.w3.org/2000/svg" 
-                   width="16" 
-                   height="16" 
-                   fill="currentColor"
-                   class="bi bi-pencil-square" 
-                   viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-              </svg>
-            </button>
-            <button type="button" class="btn btn-danger botonS" 
-                    @click="eliminarTarea(index)">
-              <svg xmlns="http://www.w3.org/2000/svg" 
-                   width="16" 
-                   height="16" 
-                   fill="currentColor"
-                   class="bi bi-x" 
-                   viewBox="0 0 16 16">
-                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-      
-    </div>
-  </div>
 </template>
 
 <script setup>
@@ -77,58 +57,51 @@ import { ref, onMounted } from 'vue';
 // Variables
 const nuevaTarea = ref('');
 const tareas = ref([]);
+const showModal = ref(true);
 
-// Variable para almacenar el índice de la tarea que se está editando
-const tareaEditandoIndex = ref(-1);
+// almacenar el índice de la tarea que se está editando
+//const tareaEditandoIndex = ref(-1);
 
-// Variable para almacenar el texto editado de la tarea
-const nuevaTextoTarea = ref('');
-
+// almacenar el texto editado de la tarea
+//const nuevaTextoTarea = ref('');
 // Hooks
 onMounted(() => {
-  obtenerTareasDeLocalStorage();
+    obtenerTareasDeLocalStorage();
 });
 
 // Métodos
 const agregarTarea = () => {
-  if (nuevaTarea.value.trim() !== '' && !tareas.value.some(tarea => tarea.texto === nuevaTarea.value.trim())) {
-    tareas.value.push({ texto: nuevaTarea.value.trim(), realizada: false });
-    guardarTareasEnLocalStorage();
-    nuevaTarea.value = '';
-  }
+    if (nuevaTarea.value.trim() !== '' && !tareas.value.some(tarea => tarea.texto === nuevaTarea.value.trim())) {
+        tareas.value.push({ texto: nuevaTarea.value.trim(), realizada: false });
+        guardarTareasEnLocalStorage();
+        nuevaTarea.value = '';
+    }
 };
 
 const marcarRealizada = (index) => {
-  tareas.value[index].realizada = !tareas.value[index].realizada;
-  guardarTareasEnLocalStorage();
+    tareas.value[index].realizada = !tareas.value[index].realizada;
+    guardarTareasEnLocalStorage();
 };
 
 const editarTarea = (index) => {
-  const nuevaTexto = prompt('Editar tarea:', tareas.value[index].texto);
-  if (nuevaTexto !== null && nuevaTexto.trim() !== '') {
-    tareas.value[index].texto = nuevaTexto;
-    guardarTareasEnLocalStorage();
-  }
+    const nuevaTexto = prompt('Editar tarea:', tareas.value[index].texto);
+    if (nuevaTexto !== null && nuevaTexto.trim() !== '') {
+        tareas.value[index].texto = nuevaTexto;
+        guardarTareasEnLocalStorage();
+    }
 };
 
-
-const eliminarTarea = (index) => {
-  if (confirm('¿Estás seguro de eliminar esta tarea?')) {
+// Método para eliminar una tarea después de confirmar
+const eliminarTareaConfirmado = (index) => {
     tareas.value.splice(index, 1);
     guardarTareasEnLocalStorage();
-  }
-};
-
-// Métodos auxiliares
-const guardarTareasEnLocalStorage = () => {
-  localStorage.setItem('tareas', JSON.stringify(tareas.value));
 };
 
 const obtenerTareasDeLocalStorage = () => {
-  const tareasLocalStorage = localStorage.getItem('tareas');
-  if (tareasLocalStorage) {
-    tareas.value = JSON.parse(tareasLocalStorage);
-  }
+    const tareasLocalStorage = localStorage.getItem('tareas');
+    if (tareasLocalStorage) {
+        tareas.value = JSON.parse(tareasLocalStorage);
+    }
 };
 </script>
 
@@ -151,7 +124,55 @@ const obtenerTareasDeLocalStorage = () => {
 
 /* Estilo para subrayar las tareas realizadas */
 .tarea-realizada {
-  text-decoration: underline;
+    text-decoration: line-through;
 }
 
+.lista-tareas {
+    max-height: 400px;
+
+    overflow-y: auto;
+
+    border-radius: 5px;
+
+    padding: 10px;
+
+
+}
+
+.showModal {
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+.btn-si {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.btn-no {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
 </style>
